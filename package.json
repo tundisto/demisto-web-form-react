@@ -1,6 +1,6 @@
 {
-  "name": "react-hello-tsx",
-  "version": "0.1.0",
+  "name": "demisto-web-form-react",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -10,16 +10,27 @@
     "@types/node": "^12.12.24",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
+    "express": "^4.17.1",
+    "express-http-proxy": "^1.5.1",
+    "fs": "0.0.1-security",
+    "http-proxy": "^1.17.0",
+    "node-sass": "^4.13.0",
+    "primeicons": "^2.0.0",
+    "primereact": "^3.3.3",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "3.3.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
     "typescript": "^3.7.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "cd server/src && node server.js",
+    "server-dev": "cd server/src && node server.js --dev"
   },
   "eslintConfig": {
     "extends": "react-app"
