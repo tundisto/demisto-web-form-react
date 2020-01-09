@@ -1,3 +1,7 @@
+@import "../node_modules/primeicons/primeicons.css";
+@import "../node_modules/primereact/resources/themes/nova-light/theme.css";
+@import "../node_modules/primereact/resources/primereact.min.css";
+
 body {
   /*background-color: rgb(12, 48, 71);*/
   background-color: rgb(26, 50, 66);
@@ -46,26 +50,26 @@ body {
   color: red($color: #000000);
 }
 
-body .ui-button {
+body .p-button {
   margin-right: .5em;
 }
 
 /* Form Labels */
 
-body .ui-card {
+body .p-card {
   margin-bottom: 1em;
   background-color: rgb(0, 15, 26) !important;
 }
 
-body .ui-card-title {
+body .p-card-title {
   color: rgb(118, 139, 161);
 }
 
-body .ui-card-subtitle {
+body .p-card-subtitle {
   color: rgb(126, 126, 126);
 }
 
-body .ui-radiobutton-label {
+body .p-radiobutton-label {
   color: #afb4b7;
 }
 
@@ -100,6 +104,12 @@ body .ui-radiobutton-label {
   max-height: 100%;
 }
 
+.loggedIn {
+  margin-top: 1em;
+  margin-right: 1em;
+  float: right;
+}
+
 
 
 /* Input Text Fields */
@@ -108,7 +118,7 @@ body .ui-radiobutton-label {
 /*input:-internal-autofill-selected {
   background-color: ;
 }*/
-body .ui-inputtext {
+body .p-inputtext {
   background-color: rgb(27, 39, 49);
   color: rgb(175, 180, 183);
   outline-style: none;
@@ -122,11 +132,11 @@ body .ui-inputtext {
 
 /* AD Listbox */
 
-body .ui-listbox .ui-listbox-list {
+body .p-listbox .p-listbox-list {
   // background-color: rgba(255, 255, 255, 0.1);
   background-color: rgb(27, 39, 49);
 
-  .ui-listbox-item {
+  .p-listbox-item {
     color: rgb(175, 180, 183);
   }
 }
