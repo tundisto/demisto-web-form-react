@@ -6,7 +6,6 @@ import { User } from './types/user';
 import { ApiStatus } from './types/api-status';
 import { ClientOptions } from './types/client-options';
 import { SelectItem } from 'primereact/api';
-import { DemistoCaseParams } from './types/demisto-case-params';
 import renderFunc from './App-html';
 
 interface AppState {
@@ -14,34 +13,36 @@ interface AppState {
   clientOptions: ClientOptions|undefined;
   computerTypes: any;
   countries: SelectItem[];
-  demistoProperties: DemistoProperties;
-  employeeForm: DemistoCaseParams;
   initialised: boolean;
   loggedInUser: User|undefined;
   serverApiInit: boolean;
   workLocations: SelectItem[];
+  demistoUrl: string;
+  demistoApiKey: string;
+  demistoTrustAny: boolean;
+  employeeFirstName: string;
+  employeeLastName: string;
+  hireDate: string;
+  workLocation: string;
+  computerType: string;
+  computerFormFactor: string
+  computerModel: string;
+  homeStreet1: string;
+  homeStreet2: string;
+  homeCity: string;
+  homeState: string;
+  homeZip: string;
+  homeCountry: string;
+  homePhone: string;
+  mobilePhone: string;
+  selectedAdGroups: string[];
 }
 
 class App extends Component<{}, AppState> {
 
   constructor(props: any) {
     super(props);
-    this.state = {
-      demistoProperties: {
-        url: '',
-        apiKey: '',
-        trustAny: true
-      },
-      employeeForm: JSON.parse(JSON.stringify(this.defaultEmployeeForm)),
-      countries: [],
-      workLocations: [],
-      computerTypes: {},
-      loggedInUser: undefined,
-      serverApiInit: false,
-      clientOptions: undefined,
-      adGroups: [],
-      initialised: false
-    };
+    this.state = this.defaultAppState
   }
 
   public render = renderFunc(this); // render function stored in separate file for maintainability
@@ -52,29 +53,34 @@ class App extends Component<{}, AppState> {
   private defaultComputerType = 'mac';
   private defaultComputerFormFactor = 'laptops';
   private defaultComputerModel = 'MacBook Pro 15"';
-  private defaultEmployeeForm: DemistoCaseParams = {
-    firstName: '',
-    lastName: '',
+  private defaultAppState: AppState = {
+    demistoUrl: '',
+    demistoApiKey: '',
+    demistoTrustAny: true,
+    countries: [],
+    workLocations: [],
+    computerTypes: {},
+    loggedInUser: undefined,
+    serverApiInit: false,
+    clientOptions: undefined,
+    adGroups: [],
+    initialised: false,
+    employeeFirstName: '',
+    employeeLastName: '',
     hireDate: '',
     workLocation: '',
-    computer: {
-      type: '',
-      formFactor: '',
-      model: ''
-    },
-    homeAddress: {
-      street1: '',
-      street2: '',
-      city: '',
-      state: '',
-      zip: '',
-      country: ''
-    },
-    phone: {
-      home: '',
-      mobile: ''
-    },
-    adGroups: []
+    computerType: '',
+    computerFormFactor: '',
+    computerModel: '',
+    homeStreet1: '',
+    homeStreet2: '',
+    homeCity: '',
+    homeState: '',
+    homeZip: '',
+    homeCountry: '',
+    homePhone: '',
+    mobilePhone: '',
+    selectedAdGroups: []
   };
 
   private messages: any; // holds ref to prime Messages component
@@ -82,27 +88,48 @@ class App extends Component<{}, AppState> {
 
 
   resetForm() {
-    let employeeForm = JSON.parse(JSON.stringify(this.defaultEmployeeForm));
-    employeeForm.computer.type = this.defaultComputerType;
-    employeeForm.computer.formFactor = this.defaultComputerFormFactor;
-    employeeForm.computer.model = this.defaultComputerModel;
+    let stateCopy: AppState = JSON.parse(JSON.stringify(this.state));
+    stateCopy = {
+      ...stateCopy,
+      employeeFirstName: '',
+      employeeLastName: '',
+      hireDate: '',
+      workLocation: '',
+      computerType: '',
+      computerFormFactor: '',
+      computerModel: '',
+      homeStreet1: '',
+      homeStreet2: '',
+      homeCity: '',
+      homeState: '',
+      homeZip: '',
+      homeCountry: '',
+      homePhone: '',
+      mobilePhone: '',
+      selectedAdGroups: []
+    }
+
+    stateCopy.computerType = this.defaultComputerType;
+    stateCopy.computerFormFactor = this.defaultComputerFormFactor;
+    stateCopy.computerModel = this.defaultComputerModel;
     
     this.state.computerTypes[this.defaultComputerType][this.defaultComputerFormFactor].forEach( (model: any) => {
       if (model.name === this.defaultComputerModel) {
-        employeeForm.computer.model = model;
+        stateCopy.computerModel = model;
       }
     } );
 
     this.state.countries.forEach(
       (country: SelectItem) => {
         if (country.value === this.state.clientOptions.defaultCountry) {
-          employeeForm.homeAddress.country = country.value;
+          stateCopy.homeCountry = country.value;
         }
       });
-    employeeForm.homeAddress.state = this.state.clientOptions.countries[this.state.clientOptions.defaultCountry].states[0].value;
-    employeeForm.workLocation = this.state.workLocations[0].value;
+    stateCopy.homeState = this.state.clientOptions.countries[this.state.clientOptions.defaultCountry].states[0].value;
+    stateCopy.workLocation = this.state.workLocations[0].value;
 
-    this.setState({employeeForm});
+
+    this.setState(stateCopy);
   }
 
 
@@ -131,11 +158,9 @@ class App extends Component<{}, AppState> {
 
       if (this.state.serverApiInit) {
         this.setState( { 
-          demistoProperties: {
-            url: res.url,
-            apiKey: '',
-            trustAny: res.trust
-          }
+            demistoUrl: res.url,
+            demistoApiKey: '',
+            demistoTrustAny: res.trust
         } );
       }
       console.log('Demisto Server API:', res);
@@ -191,7 +216,12 @@ class App extends Component<{}, AppState> {
 
     let testResult;
     try {
-      let result = await this.fetcherService.testDemisto(this.state.demistoProperties);
+      let demistoProperties: DemistoProperties = {
+        url: this.state.demistoUrl,
+        apiKey: this.state.demistoApiKey,
+        trustAny: this.state.demistoTrustAny
+      }
+      let result = await this.fetcherService.testDemisto(demistoProperties);
       console.log('testCredentials() result:', result);
       
       if ( 'success' in result && result.success ) {
@@ -244,55 +274,55 @@ class App extends Component<{}, AppState> {
 
 
   onCountryChanged(country: any) {
-    let s = {...this.state.employeeForm};
-    s.homeAddress.country = country;
-    s.homeAddress.state = this.state.clientOptions.countries[country].states[0].value;
-    this.setState({employeeForm: s});
+    this.setState({
+      homeCountry: country,
+      homeState: this.state.clientOptions.countries[country].states[0].value
+    });
   }
 
 
 
   onComputerTypeChanged(computerType: string) {
-    let s = {...this.state.employeeForm};
-    s.computer.type = computerType;
-    s.computer.model = this.state.computerTypes[computerType][this.state.employeeForm.computer.formFactor][0].value;
-    this.setState({employeeForm: s});
+    this.setState({
+      computerType,
+      computerModel: this.state.computerTypes[computerType][this.state.computerFormFactor][0].value
+    });
   }
 
 
 
-  onComputerFormFactorChanged(formFactor: string) {
-    let s = {...this.state.employeeForm};
-    s.computer.formFactor = formFactor;
-    s.computer.model = this.state.computerTypes[this.state.employeeForm.computer.type][formFactor][0].value;
-    this.setState({employeeForm: s});
+  onComputerFormFactorChanged(computerFormFactor: string) {
+    this.setState({
+      computerFormFactor,
+      computerModel: this.state.computerTypes[this.state.computerType][computerFormFactor][0].value
+    });
   }
 
 
   buildDemistoIncident() {
     let incident: any = {
-      firstName: this.state.employeeForm.firstName,
-      lastName: this.state.employeeForm.lastName,
-      hireDate: (this.state.employeeForm as any).hireDate.toISOString(),
-      homeAddressStreet: this.state.employeeForm.homeAddress.street1,
-      homeAddressCountry: this.state.employeeForm.homeAddress.country,
-      homeAddressCity: this.state.employeeForm.homeAddress.city,
-      homeAddressState: this.state.employeeForm.homeAddress.state,
-      homeAddressZip: this.state.employeeForm.homeAddress.zip,
-      workLocation: this.state.employeeForm.workLocation,
-      computerType: this.state.employeeForm.computer.type,
-      formFactor: this.state.employeeForm.computer.formFactor,
-      computerModel: this.state.employeeForm.computer.model,
-      adGroups: this.state.employeeForm.adGroups
+      firstName: this.state.employeeFirstName,
+      lastName: this.state.employeeLastName,
+      hireDate: (this.state as any).hireDate.toISOString(),
+      homeAddressStreet: this.state.homeStreet1,
+      homeAddressCountry: this.state.homeCountry,
+      homeAddressCity: this.state.homeCity,
+      homeAddressState: this.state.homeState,
+      homeAddressZip: this.state.homeZip,
+      workLocation: this.state.workLocation,
+      computerType: this.state.computerType,
+      formFactor: this.state.computerFormFactor,
+      computerModel: this.state.computerModel,
+      adGroups: this.state.selectedAdGroups
     }
-    if (this.state.employeeForm.homeAddress.street2 !== '') {
-      incident['homeAddressStreet2'] = this.state.employeeForm.homeAddress.street2;
+    if (this.state.homeStreet2 !== '') {
+      incident['homeStreet2'] = this.state.homeStreet2;
     }
-    if (this.state.employeeForm.phone.home !== '') {
-      incident['homePhone'] = this.state.employeeForm.phone.home;
+    if (this.state.homePhone !== '') {
+      incident['homePhone'] = this.state.homePhone;
     }
-    if (this.state.employeeForm.phone.mobile !== '') {
-      incident['mobilePhone'] = this.state.employeeForm.phone.mobile;
+    if (this.state.mobilePhone !== '') {
+      incident['mobilePhone'] = this.state.mobilePhone;
     }
     return incident;
   }
@@ -300,7 +330,7 @@ class App extends Component<{}, AppState> {
 
 
   async onNewEmployeeFormSubmit() {
-    console.log('onNewEmployeeFormSubmit() employeeForm:', this.state.employeeForm);
+    console.log('onNewEmployeeFormSubmit() state:', this.state);
     
     let incident = this.buildDemistoIncident();
     console.log('onNewEmployeeFormSubmit(): incident:', incident);

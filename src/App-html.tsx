@@ -16,14 +16,14 @@ function renderFunc(self: any) {
   
   return () => {
     let showForm = false;
-    if (self.state.loggedInUser && self.state.clientOptions && self.state.employeeForm.homeAddress.country && self.state.adGroups) {
+    if (self.state.loggedInUser && self.state.clientOptions && self.state.countries && self.state.adGroups) {
       showForm = true;
     }
     let disableSubmit;
     if (showForm) {
-      disableSubmit = !self.state.serverApiInit || !self.state.employeeForm.firstName || !self.state.employeeForm.lastName || !self.state.employeeForm.hireDate || !self.state.employeeForm.homeAddress.street1 || !self.state.employeeForm.homeAddress.city || !self.state.employeeForm.homeAddress.state || !self.state.employeeForm.homeAddress.zip || !(self.state.employeeForm.phone.home || self.state.employeeForm.phone.mobile) || self.state.employeeForm.adGroups.length === 0;
+      disableSubmit = !self.state.serverApiInit || !self.state.employeeFirstName || !self.state.employeeLastName || !self.state.hireDate || !self.state.homeStreet1 || !self.state.homeCity || !self.state.homeState || !self.state.homeZip || !(self.state.homePhone || self.state.mobilePhone) || self.state.selectedAdGroups.length === 0;
     }
-    let disableTestApi = self.state.demistoProperties.url === '' || self.state.demistoProperties.apiKey === '';
+    let disableTestApi = self.state.demistoUrl === '' || self.state.demistoApiKey === '';
   
     return (
       
@@ -59,7 +59,7 @@ function renderFunc(self: any) {
           {/* Demisto Base URL */}
           <div>
             <span className="p-float-label">
-              <InputText type="url" name="url" id="url" size={50} value={self.state.demistoProperties.url} onChange={(e: any) => {let s = {...self.state.demistoProperties}; s.url = e.target.value; self.setState({demistoProperties: s}); } } />
+              <InputText type="url" name="url" id="url" size={50} value={self.state.demistoUrl} onChange={(e: any) => self.setState({demistoUrl: e.target.value}) } />
               <label htmlFor="url">Demisto Base URL</label>
             </span>
           </div>
@@ -67,7 +67,7 @@ function renderFunc(self: any) {
           {/* Demisto API Key */}
           <div>
             <span className="p-float-label">
-              <InputText type="password" id="apiKey" name="apiKey" size={50} value={self.state.demistoProperties.apiKey} onChange={(e: any) => {let s = {...self.state.demistoProperties}; s.apiKey = e.target.value; self.setState({demistoProperties: s}); } } autoComplete="off" />
+              <InputText type="password" id="apiKey" name="apiKey" size={50} value={self.state.demistoApiKey} onChange={(e: any) => self.setState({demistoApiKey: e.target.value})} autoComplete="off" />
               <label htmlFor="apiKey">API Key</label>
             </span>
           </div>
@@ -75,7 +75,7 @@ function renderFunc(self: any) {
           {/* Trust Any Certificate */}
           <div>
             <span className="formLabel">Trust Any Certificate&nbsp;&nbsp;</span>
-            <InputSwitch checked={self.state.demistoProperties.trustAny} onChange={(e: any) => {let s = {...self.state.demistoProperties}; s.trustAny = e.value; self.setState({demistoProperties: s}); } } style={{verticalAlign: 'middle'}} />
+            <InputSwitch checked={self.state.demistoTrustAny} onChange={(e: any) => self.setState({demistoTrustAny: e.value})} style={{verticalAlign: 'middle'}} />
           </div>
     
         </div>
@@ -106,7 +106,7 @@ function renderFunc(self: any) {
           {/* First Name */}
           <div>
             <span className="p-float-label">
-              <InputText type="text" name="firstName" id="firstName" value={self.state.employeeForm.firstName} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.firstName = e.target.value; self.setState({employeeForm: s});}} size={50} autoComplete="off" required />
+              <InputText type="text" name="firstName" id="firstName" value={self.state.employeeFirstName} onChange={ (e: any) => self.setState({employeeFirstName: e.target.value})} size={50} autoComplete="off" required />
               <label htmlFor="firstName">First / Middle Name</label>
             </span>
           </div>
@@ -114,20 +114,20 @@ function renderFunc(self: any) {
           {/* Last Name */}
           <div>
             <span className="p-float-label">
-              <InputText name="lastName" id="lastName" value={self.state.employeeForm.lastName} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.lastName = e.target.value; self.setState({employeeForm: s});}} size={50} autoComplete="off" required />
+              <InputText name="lastName" id="lastName" value={self.state.employeeLastName} onChange={ (e: any) => self.setState({employeeLastName: e.target.value})} size={50} autoComplete="off" required />
               <label htmlFor="lastName">Last Name</label>
             </span>
           </div>
 
           {/* Hire Date */}
           <div>
-            <Calendar name="hireDate" value={self.state.employeeForm.hireDate} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.hireDate = e.value; self.setState({employeeForm: s});}} showIcon={true} required></Calendar>
+            <Calendar name="hireDate" value={self.state.hireDate} onChange={ (e: any) => self.setState({hireDate: e.value})} showIcon={true} required></Calendar>
           </div>
 
           {/* Home 1 */}
           <div>
             <span className="p-float-label">
-              <InputText type="text" name="homeAddressStreet" id="homeAddressStreet" value={self.state.employeeForm.homeAddress.street1} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.homeAddress.street1 = e.target.value; self.setState({employeeForm: s});}} size={50} required />
+              <InputText type="text" name="homeAddressStreet" id="homeAddressStreet" value={self.state.homeStreet1} onChange={ (e: any) => self.setState({homeStreet1: e.target.value})} size={50} required />
               <label htmlFor="homeAddressStreet">Street</label>
             </span>
           </div>
@@ -135,41 +135,41 @@ function renderFunc(self: any) {
           {/* Home 2 */}
           <div>
             <span className="p-float-label">
-              <InputText type="text" name="homeAddressStreet2" id="homeAddressStreet2" value={self.state.employeeForm.homeAddress.street2} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.homeAddress.street2 = e.target.value; self.setState({employeeForm: s});}} size={50} /><br />
+              <InputText type="text" name="homeAddressStreet2" id="homeAddressStreet2" value={self.state.homeStreet2} onChange={ (e: any) => self.setState({homeStreet2: e.target.value})} size={50} /><br />
               <label htmlFor="homeAddressStreet2">Street 2</label>
             </span>
           </div>
 
           {/* Country */}
           <div>
-            <Dropdown options={self.state.countries} name="homeAddressCountry" value={self.state.employeeForm.homeAddress.country} onChange={ (e: any) => {self.onCountryChanged(e.value)}} />
+            <Dropdown options={self.state.countries} name="homeAddressCountry" value={self.state.homeCountry} onChange={ (e: any) => {self.onCountryChanged(e.value)}} />
           </div>
           
           {/* City */}
           <div>
             <span className="p-float-label">
-              <InputText type="text" name="homeAddressCity" id="homeAddressCity" value={self.state.employeeForm.homeAddress.city} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.homeAddress.city = e.target.value; self.setState({employeeForm: s});}} size={50} required /><br />
+              <InputText type="text" name="homeAddressCity" id="homeAddressCity" value={self.state.homeCity} onChange={ (e: any) => self.setState({homeCity: e.target.value})} size={50} required /><br />
               <label htmlFor="homeAddressCity">City</label>
             </span>
           </div>
               
           {/* State */}
           <div>
-            <Dropdown name="homeAddressState" options={self.state.clientOptions.countries[self.state.employeeForm.homeAddress.country].states} value={self.state.employeeForm.homeAddress.state} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.homeAddress.state = e.value; self.setState({employeeForm: s});}} />
+            <Dropdown name="homeAddressState" options={self.state.clientOptions.countries[self.state.homeCountry].states} value={self.state.homeState} onChange={ (e: any) => self.setState({homeState: e.value})} />
           </div>
 
           {/* ZIP / Postcode */}
           <div>
             <span className="p-float-label">
-              <InputText type="text" name="homeAddressZip" id="homeAddressZip" value={self.state.employeeForm.homeAddress.zip} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.homeAddress.zip = e.target.value; self.setState({employeeForm: s});}} size={50} required />
-              <label htmlFor="homeAddressZip">{self.state.clientOptions.countries[self.state.employeeForm.homeAddress.country].zipLabel}</label>
+              <InputText type="text" name="homeAddressZip" id="homeAddressZip" value={self.state.homeZip} onChange={ (e: any) => self.setState({homeZip: e.target.value})} size={50} required />
+              <label htmlFor="homeAddressZip">{self.state.clientOptions.countries[self.state.homeCountry].zipLabel}</label>
             </span>
           </div>
 
           {/* Home Phone */}
           <div>
             <span className="p-float-label">
-              <InputText type="text" name="homePhone" id="homePhone" value={self.state.employeeForm.phone.home} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.phone.home = e.target.value; self.setState({employeeForm: s});}} size={50} />
+              <InputText type="text" name="homePhone" id="homePhone" value={self.state.homePhone} onChange={ (e: any) => self.setState({homePhone: e.target.value})} size={50} />
               <label htmlFor="homePhone">Home Phone</label>
             </span>
           </div>
@@ -177,7 +177,7 @@ function renderFunc(self: any) {
           {/* Mobile Phone */}
           <div>
             <span className="p-float-label">
-              <InputText type="text" name="mobilePhone" id="mobilePhone" value={self.state.employeeForm.phone.mobile} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.phone.mobile = e.target.value; self.setState({employeeForm: s});}} size={50} />
+              <InputText type="text" name="mobilePhone" id="mobilePhone" value={self.state.mobilePhone} onChange={ (e: any) => self.setState({mobilePhone: e.target.value})} size={50} />
               <label htmlFor="mobilePhone">Mobile Phone</label>
             </span>
           </div>
@@ -191,7 +191,7 @@ function renderFunc(self: any) {
 
       { /* Work Location Card */ }
       <Card title="Work Location">
-        <Dropdown options={self.state.workLocations} name="workLocation" value={self.state.employeeForm.workLocation} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.workLocation = e.value; self.setState({employeeForm: s});}} />
+        <Dropdown options={self.state.workLocations} name="workLocation" value={self.state.workLocation} onChange={ (e: any) => self.setState({workLocation: e.value})} />
       </Card>
 
 
@@ -209,7 +209,7 @@ function renderFunc(self: any) {
             {
               Object.values(self.state.clientOptions.computerTypes).map( (value: any) =>  
               <span key={`computerType-${value.name}`}>
-                <RadioButton name="computerType" id={value.name} value={value.name} checked={self.state.employeeForm.computer.type === value.name} onChange={ (e: any) => {self.onComputerTypeChanged(e.value)}} />
+                <RadioButton name="computerType" id={value.name} value={value.name} checked={self.state.computerType === value.name} onChange={ (e: any) => {self.onComputerTypeChanged(e.value)}} />
                 <label htmlFor={value.name} className="p-radiobutton-label">{value.friendlyName}</label>&nbsp;&nbsp;
                 &nbsp;&nbsp;
               </span> )
@@ -221,16 +221,16 @@ function renderFunc(self: any) {
           <div>
             <span className="formLabel">Form Factor:&nbsp;&nbsp;</span>
 
-            {self.state.clientOptions.computerTypes[self.state.employeeForm.computer.type].laptops &&
+            {self.state.clientOptions.computerTypes[self.state.computerType].laptops &&
               <span>
-                <RadioButton name="formFactor" id="laptops" value="laptops" checked={self.state.employeeForm.computer.formFactor === 'laptops'} onChange={ (e: any) => {self.onComputerFormFactorChanged(e.value)}} />
+                <RadioButton name="formFactor" id="laptops" value="laptops" checked={self.state.computerFormFactor === 'laptops'} onChange={ (e: any) => {self.onComputerFormFactorChanged(e.value)}} />
                 <label htmlFor="laptops" className="p-radiobutton-label">Laptop</label>&nbsp;&nbsp;
               </span>
             }
 
-            {self.state.clientOptions.computerTypes[self.state.employeeForm.computer.type].desktops &&
+            {self.state.clientOptions.computerTypes[self.state.computerType].desktops &&
               <span>
-                <RadioButton name="formFactor" id="desktops" value="desktops" checked={self.state.employeeForm.computer.formFactor === 'desktops'} onChange={ (e: any) => {self.onComputerFormFactorChanged(e.value)}} />
+                <RadioButton name="formFactor" id="desktops" value="desktops" checked={self.state.computerFormFactor === 'desktops'} onChange={ (e: any) => {self.onComputerFormFactorChanged(e.value)}} />
                 <label htmlFor="desktops" className="p-radiobutton-label">Desktop</label>&nbsp;&nbsp;
               </span>
             }
@@ -239,7 +239,7 @@ function renderFunc(self: any) {
 
           {/* Computer Model */}
           <div>
-            <Dropdown name="computerModel" options={self.state.computerTypes[self.state.employeeForm.computer.type][self.state.employeeForm.computer.formFactor]} value={self.state.employeeForm.computer.model} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.computer.model = e.value; self.setState({employeeForm: s});}} />
+            <Dropdown name="computerModel" options={self.state.computerTypes[self.state.computerType][self.state.computerFormFactor]} value={self.state.computerModel} onChange={ (e: any) => self.setState({computerModel: e.value})} />
           </div>
 
         </div>
@@ -253,9 +253,9 @@ function renderFunc(self: any) {
       <Card title="Active Directory Groups">
         <span className="formLabel">Selected Groups: </span>
         {
-          self.state.employeeForm.adGroups.map( (group: string) => { return <span key={`adGroup-${group}`} style={{marginRight: '1em', color: 'white'}} >{group}</span> } )
+          self.state.selectedAdGroups.map( (group: string) => { return <span key={`adGroup-${group}`} style={{marginRight: '1em', color: 'white'}} >{group}</span> } )
         }
-        <ListBox options={self.state.adGroups} value={self.state.employeeForm.adGroups} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.adGroups = e.value; self.setState({employeeForm: s});}}  multiple={true} metaKeySelection={false} filter={false}></ListBox>
+        <ListBox options={self.state.adGroups} value={self.state.selectedAdGroups} onChange={ (e: any) => self.setState({selectedAdGroups: e.value})}  multiple={true} metaKeySelection={false} filter={false}></ListBox>
       </Card>
 
       
