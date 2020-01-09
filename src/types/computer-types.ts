@@ -1,8 +1,10 @@
+import { SelectItem } from 'primereact/api';
+
 interface Computer {
   name: string;
   friendlyName: string;
-  desktops?: string[];
-  laptops?: string[];
+  desktops?: SelectItem[];
+  laptops?: SelectItem[];
 }
 
 export interface ComputerTypes {

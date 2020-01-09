@@ -13,13 +13,13 @@ interface AppState {
   adGroups: SelectItem[];
   clientOptions: ClientOptions|undefined;
   computerTypes: any;
-  countries: any[];
+  countries: SelectItem[];
   demistoProperties: DemistoProperties;
   employeeForm: DemistoCaseParams;
   initialised: boolean;
   loggedInUser: User|undefined;
   serverApiInit: boolean;
-  workLocations: any[];
+  workLocations: SelectItem[];
 }
 
 class App extends Component<{}, AppState> {
@@ -94,13 +94,13 @@ class App extends Component<{}, AppState> {
     } );
 
     this.state.countries.forEach(
-      (country: any) => {
-        if (country.name === this.state.clientOptions.defaultCountry) {
-          employeeForm.homeAddress.country = country;
+      (country: SelectItem) => {
+        if (country.value === this.state.clientOptions.defaultCountry) {
+          employeeForm.homeAddress.country = country.value;
         }
       });
-    employeeForm.homeAddress.state = this.state.clientOptions.countries[this.state.clientOptions.defaultCountry].states[0];
-    employeeForm.workLocation = this.state.workLocations[0];
+    employeeForm.homeAddress.state = this.state.clientOptions.countries[this.state.clientOptions.defaultCountry].states[0].value;
+    employeeForm.workLocation = this.state.workLocations[0].value;
 
     this.setState({employeeForm});
   }
@@ -121,7 +121,6 @@ class App extends Component<{}, AppState> {
     // API Init
     try {
       let res: ApiStatus = await this.fetcherService.getApiStatus();
-      // this.serverApiInit = res.initialised;
       this.setState( { serverApiInit: res.initialised } );
       if (this.state.serverApiInit) {
         this.messages.replace({ severity: 'success', summary: 'Success', detail: 'Demisto API communication is initialised', life: 5000});
@@ -157,12 +156,12 @@ class App extends Component<{}, AppState> {
       console.log('adGroups:', this.state.adGroups);
 
       // Countries
-      let countries = Object.keys(clientOptions.countries).map( country => {return {name: country}});
+      let countries: SelectItem[] = Object.keys(clientOptions.countries).map( country => {return {value: country, label: country}});
       this.setState({countries});
       console.log('countries:', this.state.countries);
 
       // Work Locations
-      let workLocations = clientOptions.workLocations.map( location => {return {name: location} });
+      let workLocations: SelectItem[] = clientOptions.workLocations.map( location => {return {value: location, label: location} });
       this.setState({workLocations});
       console.log('workLocations:', workLocations);
 
@@ -170,8 +169,8 @@ class App extends Component<{}, AppState> {
       let computerTypes: any = {};
       Object.keys(clientOptions.computerTypes).forEach( type => {
         computerTypes[type] = {
-          desktops: clientOptions.computerTypes[type].desktops.map( (model: string) => {return {name: model}}),
-          laptops: clientOptions.computerTypes[type].laptops.map( (model: string) => {return {name: model}})
+          desktops: clientOptions.computerTypes[type].desktops.map( (model: SelectItem) => {return {value: model, label: model}}),
+          laptops: clientOptions.computerTypes[type].laptops.map( (model: SelectItem) => {return {value: model, label: model}})
         };
       });
       this.setState({computerTypes});
@@ -247,7 +246,7 @@ class App extends Component<{}, AppState> {
   onCountryChanged(country: any) {
     let s = {...this.state.employeeForm};
     s.homeAddress.country = country;
-    s.homeAddress.state = this.state.clientOptions.countries[country.name].states[0] as any;
+    s.homeAddress.state = this.state.clientOptions.countries[country].states[0].value;
     this.setState({employeeForm: s});
   }
 
@@ -256,7 +255,7 @@ class App extends Component<{}, AppState> {
   onComputerTypeChanged(computerType: string) {
     let s = {...this.state.employeeForm};
     s.computer.type = computerType;
-    s.computer.model = this.state.computerTypes[computerType][this.state.employeeForm.computer.formFactor][0];
+    s.computer.model = this.state.computerTypes[computerType][this.state.employeeForm.computer.formFactor][0].value;
     this.setState({employeeForm: s});
   }
 
@@ -265,7 +264,7 @@ class App extends Component<{}, AppState> {
   onComputerFormFactorChanged(formFactor: string) {
     let s = {...this.state.employeeForm};
     s.computer.formFactor = formFactor;
-    s.computer.model = this.state.computerTypes[this.state.employeeForm.computer.type][formFactor][0];
+    s.computer.model = this.state.computerTypes[this.state.employeeForm.computer.type][formFactor][0].value;
     this.setState({employeeForm: s});
   }
 
@@ -276,14 +275,14 @@ class App extends Component<{}, AppState> {
       lastName: this.state.employeeForm.lastName,
       hireDate: (this.state.employeeForm as any).hireDate.toISOString(),
       homeAddressStreet: this.state.employeeForm.homeAddress.street1,
-      homeAddressCountry: (this.state.employeeForm.homeAddress.country as any).name,
+      homeAddressCountry: this.state.employeeForm.homeAddress.country,
       homeAddressCity: this.state.employeeForm.homeAddress.city,
-      homeAddressState: (this.state.employeeForm.homeAddress.state as any).name,
+      homeAddressState: this.state.employeeForm.homeAddress.state,
       homeAddressZip: this.state.employeeForm.homeAddress.zip,
-      workLocation: (this.state.employeeForm.workLocation as any).name,
+      workLocation: this.state.employeeForm.workLocation,
       computerType: this.state.employeeForm.computer.type,
       formFactor: this.state.employeeForm.computer.formFactor,
-      computerModel: (this.state.employeeForm.computer.model as any).name,
+      computerModel: this.state.employeeForm.computer.model,
       adGroups: this.state.employeeForm.adGroups
     }
     if (this.state.employeeForm.homeAddress.street2 !== '') {
@@ -294,8 +293,8 @@ class App extends Component<{}, AppState> {
     }
     if (this.state.employeeForm.phone.mobile !== '') {
       incident['mobilePhone'] = this.state.employeeForm.phone.mobile;
-      return incident;
     }
+    return incident;
   }
 
 
@@ -304,7 +303,7 @@ class App extends Component<{}, AppState> {
     console.log('onNewEmployeeFormSubmit() employeeForm:', this.state.employeeForm);
     
     let incident = this.buildDemistoIncident();
-    console.log('incident:', incident);
+    console.log('onNewEmployeeFormSubmit(): incident:', incident);
 
     let res = await this.fetcherService.createDemistoIncident(incident);
     // console.log('res:', res);

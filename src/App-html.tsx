@@ -142,7 +142,7 @@ function renderFunc(self: any) {
 
           {/* Country */}
           <div>
-            <Dropdown options={self.state.countries} name="homeAddressCountry" value={self.state.employeeForm.homeAddress.country} onChange={ (e: any) => {self.onCountryChanged(e.value)}} optionLabel="name" />
+            <Dropdown options={self.state.countries} name="homeAddressCountry" value={self.state.employeeForm.homeAddress.country} onChange={ (e: any) => {self.onCountryChanged(e.value)}} />
           </div>
           
           {/* City */}
@@ -155,14 +155,14 @@ function renderFunc(self: any) {
               
           {/* State */}
           <div>
-            <Dropdown name="homeAddressState" options={self.state.clientOptions.countries[self.state.employeeForm.homeAddress.country.name].states} value={self.state.employeeForm.homeAddress.state} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.homeAddress.state = e.value; self.setState({employeeForm: s});}} optionLabel="display" dataKey="name" />
+            <Dropdown name="homeAddressState" options={self.state.clientOptions.countries[self.state.employeeForm.homeAddress.country].states} value={self.state.employeeForm.homeAddress.state} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.homeAddress.state = e.value; self.setState({employeeForm: s});}} />
           </div>
 
           {/* ZIP / Postcode */}
           <div>
             <span className="p-float-label">
               <InputText type="text" name="homeAddressZip" id="homeAddressZip" value={self.state.employeeForm.homeAddress.zip} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.homeAddress.zip = e.target.value; self.setState({employeeForm: s});}} size={50} required />
-              <label htmlFor="homeAddressZip">{self.state.clientOptions.countries[self.state.employeeForm.homeAddress.country.name].zipLabel}</label>
+              <label htmlFor="homeAddressZip">{self.state.clientOptions.countries[self.state.employeeForm.homeAddress.country].zipLabel}</label>
             </span>
           </div>
 
@@ -191,7 +191,7 @@ function renderFunc(self: any) {
 
       { /* Work Location Card */ }
       <Card title="Work Location">
-        <Dropdown options={self.state.workLocations} name="workLocation" value={self.state.employeeForm.workLocation} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.workLocation = e.value; self.setState({employeeForm: s});}} optionLabel="name" />
+        <Dropdown options={self.state.workLocations} name="workLocation" value={self.state.employeeForm.workLocation} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.workLocation = e.value; self.setState({employeeForm: s});}} />
       </Card>
 
 
@@ -239,7 +239,7 @@ function renderFunc(self: any) {
 
           {/* Computer Model */}
           <div>
-            <Dropdown name="computerModel" options={self.state.computerTypes[self.state.employeeForm.computer.type][self.state.employeeForm.computer.formFactor]} value={self.state.employeeForm.computer.model} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.computer.model = e.value; self.setState({employeeForm: s});}} optionLabel="name" />
+            <Dropdown name="computerModel" options={self.state.computerTypes[self.state.employeeForm.computer.type][self.state.employeeForm.computer.formFactor]} value={self.state.employeeForm.computer.model} onChange={ (e: any) => {let s = {...self.state.employeeForm}; s.computer.model = e.value; self.setState({employeeForm: s});}} />
           </div>
 
         </div>
