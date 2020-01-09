@@ -93,9 +93,7 @@ function renderFunc(self: any) {
 
     
 
-    { /* (ngSubmit)="onNewEmployeeFormSubmit(newUserForm)" */ }
-    { /* novalidate */ }
-    <form>
+    <form noValidate>
 
       {/* Employee Details */}
 
