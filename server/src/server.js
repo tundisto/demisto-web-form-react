@@ -15,7 +15,7 @@ var trustAny = null; // boolean -- whether to trust any Demisto server certifici
 // Directories and files
 const fs = require('fs');
 const defsDir = './definitions';
-const staticDir = '../../dist/demisto-form';
+const staticDir = '../../build';
 const foundDist = fs.existsSync(staticDir); // check for presence of pre-built angular client directory
 const configDir = '../config';
 const apiCfgFile = configDir + '/api.json';
