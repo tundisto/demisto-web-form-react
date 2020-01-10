@@ -67,13 +67,13 @@ These are the relevant details to enable the app to run successfully on the Demi
 | Computer Model | Short text |
 | Form Factor | Single select |
 
-### Demisto API Key
-
-Before this app can be used, An API key must first be generated within Demisto. using `Settings -> Integrations -> API Keys -> Get Your Key`.  Enter this key and the server infornation into the Server Parameters section of the app.
-
 ### Note on Playbook
 
-A playbook is not yet provided as part of this sample.  The app will create a Demisto incident with the necessary fields, but a playbook would still beed to be built to perform any automated actions based on the form.
+A playbook is not yet provided as part of this sample.  The app will create a Demisto incident with the necessary fields, but a playbook would still beed to be built to perform any automated actions based on the form
+.
+### Demisto API Key
+
+Before this app can be used, An API key must first be generated within Demisto. using `Settings -> Integrations -> API Keys -> Get Your Key`.  Enter this key and the server infornation into the Demisto Parameters section of the app.
 
 ## Running the Node.js server
 
@@ -93,4 +93,4 @@ Run `npm run build` to build the project in production mode. The build artifacts
 
 ## Connecting to the Application
 
-Browse to `http://<yourserverip>:4001` in your favourite web browser to launch the application.
+Browse to http://yourserver:4001 in your favourite web browser to launch the application.

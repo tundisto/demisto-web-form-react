@@ -6,12 +6,13 @@ import { User } from './types/user';
 import { ApiStatus } from './types/api-status';
 import { ClientOptions } from './types/client-options';
 import { SelectItem } from 'primereact/api';
+import { ComputerTypes } from './types/computer-types';
 import renderFunc from './App-html';
 
 interface AppState {
   adGroups: SelectItem[];
   clientOptions: ClientOptions|undefined;
-  computerTypes: any;
+  computerTypes: ComputerTypes;
   countries: SelectItem[];
   initialised: boolean;
   loggedInUser: User|undefined;
@@ -113,7 +114,7 @@ class App extends Component<{}, AppState> {
     stateCopy.computerFormFactor = this.defaultComputerFormFactor;
     stateCopy.computerModel = this.defaultComputerModel;
     
-    this.state.computerTypes[this.defaultComputerType][this.defaultComputerFormFactor].forEach( (model: any) => {
+    (this.state.computerTypes[this.defaultComputerType][this.defaultComputerFormFactor] as SelectItem[]).forEach( (model: any) => {
       if (model.name === this.defaultComputerModel) {
         stateCopy.computerModel = model;
       }
@@ -194,8 +195,8 @@ class App extends Component<{}, AppState> {
       let computerTypes: any = {};
       Object.keys(clientOptions.computerTypes).forEach( type => {
         computerTypes[type] = {
-          desktops: clientOptions.computerTypes[type].desktops.map( (model: SelectItem) => {return {value: model, label: model}}),
-          laptops: clientOptions.computerTypes[type].laptops.map( (model: SelectItem) => {return {value: model, label: model}})
+          desktops: (clientOptions.computerTypes[type].desktops as string[]).map( model => {return {value: model, label: model}}),
+          laptops: (clientOptions.computerTypes[type].laptops as string[]).map( model => {return {value: model, label: model}})
         };
       });
       this.setState({computerTypes});
@@ -285,7 +286,7 @@ class App extends Component<{}, AppState> {
   onComputerTypeChanged(computerType: string) {
     this.setState({
       computerType,
-      computerModel: this.state.computerTypes[computerType][this.state.computerFormFactor][0].value
+      computerModel: (this.state.computerTypes[computerType][this.state.computerFormFactor] as SelectItem[])[0].value
     });
   }
 
@@ -294,7 +295,7 @@ class App extends Component<{}, AppState> {
   onComputerFormFactorChanged(computerFormFactor: string) {
     this.setState({
       computerFormFactor,
-      computerModel: this.state.computerTypes[this.state.computerType][computerFormFactor][0].value
+      computerModel: (this.state.computerTypes[this.state.computerType][computerFormFactor] as SelectItem[])[0].value
     });
   }
 
