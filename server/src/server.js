@@ -1,6 +1,6 @@
 'use strict';
 
-console.log('Demisto case creation sample web form server for Angular is starting');
+console.log('Demisto case creation sample web form server for React is starting');
 
 ////////////////////// Config and Imports //////////////////////
 
@@ -16,7 +16,7 @@ var trustAny = null; // boolean -- whether to trust any Demisto server certifici
 const fs = require('fs');
 const defsDir = './definitions';
 const staticDir = '../../build';
-const foundDist = fs.existsSync(staticDir); // check for presence of pre-built angular client directory
+const foundDist = fs.existsSync(staticDir); // check for presence of pre-built client directory
 const configDir = '../config';
 const apiCfgFile = configDir + '/api.json';
 const foundApiConfig = fs.existsSync(apiCfgFile); // check for presence of API configuration file
@@ -372,14 +372,14 @@ app.post(apiPath + '/createDemistoIncident', async (req, res) => {
 
 
   if (foundDist && !devMode) {
-    // Serve compiled Angular files statically
+    // Serve compiled client files statically
     console.log('Found dist/ directory.  Serving client from there');
     app.use(express.static(staticDir));
   }
 
   else {
     // Proxy client connections to the 'ng serve' instance
-    console.log(`Enabling client development mode -- proxying Angular development server at ${proxyDest}`);
+    console.log(`Enabling client development mode -- proxying React development server at ${proxyDest}`);
     
     var proxy = require('express-http-proxy'); // express-http-proxy supports being tied to defined express routes
     app.use('/', proxy(proxyDest));
