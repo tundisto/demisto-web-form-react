@@ -146,6 +146,9 @@ class App extends Component<{}, AppState> {
       console.log('Caught error fetching logged in user:', err);
     }
 
+    // Encryption
+    await this.fetcherService.initEncryption();
+
     // API Init
     try {
       let res: ApiStatus = await this.fetcherService.getApiStatus();

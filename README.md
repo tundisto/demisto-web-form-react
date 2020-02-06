@@ -77,11 +77,11 @@ Before this app can be used, An API key must first be generated within Demisto. 
 
 ## Running the Node.js server
 
-Run `npm run server` to start the Node.js server.  If the `build/` subdirectory is found, the pre-compiled React application will be served statically from it.  If `build/` isn't found, it will run in development mode by proxying http://localhost:3000.
+Run `npm run server` to start the Node.js server.  If the `build/` subdirectory is found, the pre-compiled React application will be served statically from it.  If `build/` isn't found, it will run in development mode by proxying the React development server.
 
 ## Running the Node.js server in development mode
 
-Use `npm run server-dev` to run the server in development mode, which will only proxy http://localhost:3000, rather than serving `build/` statically.
+Use `npm run server-dev` to run the server in development mode, which will only proxy the React development server, rather than serving `build/` statically.
 
 ## Running the React client in development mode
 
@@ -93,4 +93,4 @@ Run `npm run build` to build the project in production mode. The build artifacts
 
 ## Connecting to the Application
 
-Browse to http://yourserver:4001 in your favourite web browser to launch the application.
+Browse to https://yourserver:4001 in your favourite web browser to launch the application.
