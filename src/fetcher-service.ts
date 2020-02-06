@@ -4,13 +4,38 @@ import { User } from './types/user';
 import { ApiStatus } from './types/api-status';
 import { ClientOptions } from './types/client-options';
 import { DemistoCaseParams } from './types/demisto-case-params';
+import { JSEncrypt } from 'jsencrypt';
 
 export class FetcherService {
 
-  //http: AxiosStatic = axios;
   demistoProperties: DemistoProperties; // gets set during test
   currentUser: User;
   apiPath = '/api';
+  private publicKey: string;
+  encryptor: any;
+
+
+
+  getPublicKey(): Promise<void> {
+    let headers = this.buildHeaders();
+    return axios.get(this.apiPath + '/publicKey', { headers } )
+                .then( response => response.data )
+                .then( (value: any) => this.publicKey = value.publicKey );
+  }
+
+
+
+  async initEncryption(): Promise<any> {
+    await this.getPublicKey();
+    this.encryptor = new JSEncrypt();
+    this.encryptor.setPublicKey(this.publicKey);
+  }
+
+
+
+  encrypt(str: string): string {
+    return this.encryptor.encrypt(str);
+  }
 
     
   getLoggedInUser(): Promise<User> {
@@ -57,6 +82,11 @@ export class FetcherService {
 
 
   testDemisto( demistoProperties: DemistoProperties ): Promise<any> {
+    console.log('demistoProperties:', demistoProperties);
+    if ('apiKey' in demistoProperties) {
+      demistoProperties.apiKey = this.encrypt(demistoProperties.apiKey);
+    }
+    console.log('demistoProperties:', demistoProperties);
     this.demistoProperties = demistoProperties;
     let headers = this.buildHeaders();
     return axios.post(this.apiPath + '/testConnect', demistoProperties, { headers } )
