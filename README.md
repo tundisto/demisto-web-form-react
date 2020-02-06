@@ -15,7 +15,7 @@ This is a simplistic, sample implementation, for reference purposes only. It is 
 
 There is no authentication mechanism in this application for client communication (though a 'dummy' user is shown in the form which is obtained through an API call to the server, similar to what may happen in a production app).  Any user connecting to this app will be able to submit the form, assuming Demisto API communications have been initialised using a Demisto API key.
 
-**ASSUME THAT THIS IMPLEMENTATION IS INSECURE** and that it will require numerous changes to be used in production.
+**ASSUME THAT THIS IMPLEMENTATION IS INSECURE** and that it will require numerous changes to be used in production.  It does, however, make use of SSL and also encryption for the Demisto API key.
 
 ## Running for the First Time
 
