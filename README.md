@@ -91,6 +91,26 @@ Run `npm start` to start the React development compiler, allowing live-reload if
 
 Run `npm run build` to build the project in production mode. The build artifacts will be stored in the `build/` subdirectory.
 
+## Running in Docker
+
+This is also distributed as a Docker image.
+
+### Create a container
+
+`docker create -p 4001:4001 --name demisto-web-form-react demisto-web-form-react:latest`
+
+### Start the conatiner:
+
+`docker start demisto-web-form-react`
+
+### Stop the container:
+
+`docker stop demisto-web-form-react`
+
+### Run a temporary container:
+
+`docker run -p 4001:4001 -ti --rm demisto-web-form-react:latest`
+
 ## Connecting to the Application
 
 Browse to https://yourserver:4001 in your favourite web browser to launch the application.
