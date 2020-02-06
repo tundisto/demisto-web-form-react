@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import App from './App';
 // PrimeReact
 import { Card } from 'primereact/card';
 import { ListBox } from 'primereact/listbox';
@@ -7,12 +8,12 @@ import { Messages } from 'primereact/messages';
 import { Message } from 'primereact/message';
 import { InputSwitch } from 'primereact/inputswitch';
 import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
+import { Dropdown, DropdownProps } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { RadioButton } from 'primereact/radiobutton';
 
 
-function renderFunc(self: any) {
+function renderFunc(self: App) {
   
   return () => {
     let showForm = false;
@@ -237,7 +238,7 @@ function renderFunc(self: any) {
 
           {/* Computer Model */}
           <div>
-            <Dropdown name="computerModel" options={self.state.computerTypes[self.state.computerType][self.state.computerFormFactor]} value={self.state.computerModel} onChange={ (e: any) => self.setState({computerModel: e.value})} />
+            <Dropdown name="computerModel" options={self.state.computerTypes[self.state.computerType][self.state.computerFormFactor] as DropdownProps[]} value={self.state.computerModel} onChange={ (e: any) => self.setState({computerModel: e.value})} />
           </div>
 
         </div>

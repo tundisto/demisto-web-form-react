@@ -11,7 +11,7 @@ import renderFunc from './App-html';
 
 interface AppState {
   adGroups: SelectItem[];
-  clientOptions: ClientOptions|undefined;
+  clientOptions: ClientOptions;
   computerTypes: ComputerTypes;
   countries: SelectItem[];
   initialised: boolean;
@@ -23,7 +23,7 @@ interface AppState {
   demistoTrustAny: boolean;
   employeeFirstName: string;
   employeeLastName: string;
-  hireDate: string;
+  hireDate: Date;
   workLocation: string;
   computerType: string;
   computerFormFactor: string
@@ -68,7 +68,7 @@ class App extends Component<{}, AppState> {
     initialised: false,
     employeeFirstName: '',
     employeeLastName: '',
-    hireDate: '',
+    hireDate: undefined,
     workLocation: '',
     computerType: '',
     computerFormFactor: '',
@@ -84,7 +84,7 @@ class App extends Component<{}, AppState> {
     selectedAdGroups: []
   };
 
-  private messages: any; // holds ref to prime Messages component
+  messages: any; // holds ref to prime Messages component
 
 
 
@@ -94,7 +94,7 @@ class App extends Component<{}, AppState> {
       ...stateCopy,
       employeeFirstName: '',
       employeeLastName: '',
-      hireDate: '',
+      hireDate: undefined,
       workLocation: '',
       computerType: '',
       computerFormFactor: '',
@@ -307,7 +307,7 @@ class App extends Component<{}, AppState> {
     let incident: any = {
       firstName: this.state.employeeFirstName,
       lastName: this.state.employeeLastName,
-      hireDate: (this.state as any).hireDate.toISOString(),
+      hireDate: this.state.hireDate.toISOString(),
       homeAddressStreet: this.state.homeStreet1,
       homeAddressCountry: this.state.homeCountry,
       homeAddressCity: this.state.homeCity,

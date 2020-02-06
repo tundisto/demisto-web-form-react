@@ -1,12 +1,12 @@
-import { SelectItem } from 'primereact/api';
+import { DropdownProps } from 'primereact/dropdown';
 
 interface Computer {
   name?: string;
   friendlyName?: string;
-  desktops: SelectItem[] | string[];
-  laptops: SelectItem[] | string[];
+  desktops: DropdownProps[] | string[];
+  laptops: DropdownProps[] | string[];
   computerType: string;
-  [index: string]: SelectItem[] | string[] | string;
+  [index: string]: DropdownProps[] | string[] | string;
 }
 
 export interface ComputerTypes {
