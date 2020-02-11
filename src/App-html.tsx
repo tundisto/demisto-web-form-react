@@ -14,7 +14,7 @@ import { RadioButton } from 'primereact/radiobutton';
 
 
 function renderFunc(self: App) {
-  
+
   return () => {
     let showForm = false;
     if (self.state.loggedInUser && self.state.clientOptions && self.state.countries && self.state.adGroups) {
@@ -24,17 +24,17 @@ function renderFunc(self: App) {
     if (showForm) {
       disableSubmit = !self.state.serverApiInit || !self.state.employeeFirstName || !self.state.employeeLastName || !self.state.hireDate || !self.state.homeStreet1 || !self.state.homeCity || !self.state.homeState || !self.state.homeZip || !(self.state.homePhone || self.state.mobilePhone) || self.state.selectedAdGroups.length === 0;
     }
-    let disableTestApi = self.state.demistoUrl === '' || self.state.demistoApiKey === '';
-  
+    let disableTestApi = self.state.serverApiInit ? self.state.demistoUrl === '' : self.state.demistoUrl === '' || self.state.demistoApiKey === '';
+
     return (
-      
+
 <Fragment>
 
   {self.state.initialised && showForm &&
-  
+
   <div className="formContainer">
     <img src="/demisto-logo-1.png" style={{marginTop: '1em'}} alt="Demisto Logo"></img>
-    
+
     <div className="loggedIn">Logged in as: <span style={{fontWeight: 'bold'}}> {self.state.loggedInUser.username}</span></div>
 
     <h1 className="bodyHeader">
@@ -56,7 +56,7 @@ function renderFunc(self: App) {
       <form>
 
         <div className="demistoForm">
-          
+
           {/* Demisto Base URL */}
           <div>
             <span className="p-float-label">
@@ -64,7 +64,7 @@ function renderFunc(self: App) {
               <label htmlFor="url">Demisto Base URL</label>
             </span>
           </div>
-          
+
           {/* Demisto API Key */}
           <div>
             <span className="p-float-label">
@@ -72,13 +72,13 @@ function renderFunc(self: App) {
               <label htmlFor="apiKey">API Key</label>
             </span>
           </div>
-          
+
           {/* Trust Any Certificate */}
           <div>
             <span className="formLabel">Trust Any Certificate&nbsp;&nbsp;</span>
             <InputSwitch checked={self.state.demistoTrustAny} onChange={(e: any) => self.setState({demistoTrustAny: e.value})} style={{verticalAlign: 'middle'}} />
           </div>
-    
+
         </div>
 
         {/* Test Button */}
@@ -92,14 +92,14 @@ function renderFunc(self: App) {
       </form>
     </Card>
 
-    
+
 
     <form noValidate>
 
       {/* Employee Details */}
 
       <Card title="New Employee Detail" subTitle="This section will create a new Demisto incident with the intent of running a playbook for creating a new employee.  This playbook might seek the approval of HR, then create the new user's account in Active Directory, and finally it might then issue them a new laptop.  The workflow can be customised extensively.">
-        
+
         <div className="demistoForm">
 
           {/* First Name */}
@@ -130,7 +130,7 @@ function renderFunc(self: App) {
               <label htmlFor="homeAddressStreet">Street</label>
             </span>
           </div>
-          
+
           {/* Home 2 */}
           <div>
             <span className="p-float-label">
@@ -143,7 +143,7 @@ function renderFunc(self: App) {
           <div>
             <Dropdown options={self.state.countries} name="homeAddressCountry" value={self.state.homeCountry} onChange={ (e: any) => {self.onCountryChanged(e.value)}} />
           </div>
-          
+
           {/* City */}
           <div>
             <span className="p-float-label">
@@ -151,7 +151,7 @@ function renderFunc(self: App) {
               <label htmlFor="homeAddressCity">City</label>
             </span>
           </div>
-              
+
           {/* State */}
           <div>
             <Dropdown name="homeAddressState" options={self.state.clientOptions.countries[self.state.homeCountry].states} value={self.state.homeState} onChange={ (e: any) => self.setState({homeState: e.value})} />
@@ -172,7 +172,7 @@ function renderFunc(self: App) {
               <label htmlFor="homePhone">Home Phone</label>
             </span>
           </div>
-      
+
           {/* Mobile Phone */}
           <div>
             <span className="p-float-label">
@@ -204,9 +204,9 @@ function renderFunc(self: App) {
           {/* Computer Type */}
           <div>
             <span className="formLabel">Type:&nbsp;&nbsp;</span>
-            
+
             {
-              Object.values(self.state.clientOptions.computerTypes).map( (value: any) =>  
+              Object.values(self.state.clientOptions.computerTypes).map( (value: any) =>
               <span key={`computerType-${value.name}`}>
                 <RadioButton name="computerType" id={value.name} value={value.name} checked={self.state.computerType === value.name} onChange={ (e: any) => {self.onComputerTypeChanged(e.value)}} />
                 <label htmlFor={value.name} className="p-radiobutton-label">{value.friendlyName}</label>&nbsp;&nbsp;
@@ -215,7 +215,7 @@ function renderFunc(self: App) {
             }
 
           </div>
-          
+
           {/* Computer Form Factor */}
           <div>
             <span className="formLabel">Form Factor:&nbsp;&nbsp;</span>
@@ -233,7 +233,7 @@ function renderFunc(self: App) {
                 <label htmlFor="desktops" className="p-radiobutton-label">Desktop</label>&nbsp;&nbsp;
               </span>
             }
-            
+
           </div>
 
           {/* Computer Model */}
@@ -257,7 +257,7 @@ function renderFunc(self: App) {
         <ListBox options={self.state.adGroups} value={self.state.selectedAdGroups} onChange={ (e: any) => self.setState({selectedAdGroups: e.value})}  multiple={true} metaKeySelection={false} filter={false}></ListBox>
       </Card>
 
-      
+
       {/* Submit / Reset Buttons */}
       <div style={{marginTop: '1em'}}>&nbsp;&nbsp;
         <Button type="button" label="Submit" onClick={() => self.onNewEmployeeFormSubmit()} disabled={disableSubmit} />
@@ -265,18 +265,18 @@ function renderFunc(self: App) {
       </div>
 
     </form>
-    
+
 
     <div>&nbsp;</div>
-  
+
   </div> }
 
 
   <div className="messagesContainer">
     <Messages ref={(el) => self.messages = el}></Messages>
   </div>
-  
-  
+
+
   {self.state.initialised && !showForm &&
   <div>
     Could not obtain logged in user from API
