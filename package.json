@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "express-http-proxy": "^1.5.1",
     "fs": "0.0.1-security",
-    "http-proxy": "^1.17.0",
+    "http-proxy": "^1.18.1",
     "jsencrypt": "^3.0.0-rc.1",
     "node-rsa": "^1.0.7",
     "node-sass": "^4.13.0",
